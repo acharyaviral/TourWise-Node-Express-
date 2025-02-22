@@ -1,3 +1,4 @@
+const { handle } = require("express/lib/application");
 const AppError = require("../utils/appError");
 
 // Handle Mongoose CastError (invalid ID format)
@@ -19,6 +20,12 @@ const handleValidationErrorDB = (err) => {
 	const message = `Invalid input data. ${errors.join(". ")}`;
 	return new AppError(message, 400);
 };
+
+const handleJWTError = () =>
+	new AppError("Invalid token. Please log in again!", 401);
+
+const handleJWTExpiredError = () =>
+	new AppError("Your token has expired! Please log in again.", 401);
 
 // Error response handler for development environment
 const sendErrorDev = (err, res) => {
@@ -69,6 +76,10 @@ module.exports = (err, req, res, next) => {
 		if (error.name === "ValidationError")
 			error = handleValidationErrorDB(error);
 
-		sendErrorProd(error, res);
+		// Transform common JWT errors into operational errors
+		if (error.name === "JsonWebTokenError") error = handleJWTError();
+		if (error.name === "TokenExpiredError") error = handleJWTExpiredError();
+
+		sendErrorProd(res);
 	}
 };
