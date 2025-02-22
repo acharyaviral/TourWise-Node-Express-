@@ -47,6 +47,14 @@ userSchema.pre("save", async function (next) {
 	next();
 });
 
+// biome-ignore lint/complexity/useArrowFunction: <explanation>
+userSchema.methods.correctPassword = async function (
+	candidatePassword,
+	userPassword,
+) {
+	return await bcrypt.compare(candidatePassword, userPassword);
+};
+
 // Create User model
 const User = mongoose.model("User", userSchema);
 
