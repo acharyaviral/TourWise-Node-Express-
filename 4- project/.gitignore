@@ -1,6 +1,8 @@
 # Node modules
 node_modules/
 
+dev-data/
+
 
 # Logs
 npm-debug.log*
