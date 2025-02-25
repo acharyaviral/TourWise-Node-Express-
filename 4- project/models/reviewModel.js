@@ -7,7 +7,7 @@ const { type } = require("node:os");
 const reviewSchema = new mongoose.Schema(
 	{
 		review: {
-			type: string,
+			type: String,
 			required: [true, "Review can not be empty"],
 		},
 		rating: {
