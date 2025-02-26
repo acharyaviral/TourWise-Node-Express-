@@ -3,7 +3,7 @@ const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
 const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
-//const xss = require("xss");
+// const xss = require("xss-clean");  DEPRECATED !!!
 const hpp = require("hpp");
 
 const AppError = require("./utils/appError");
@@ -13,7 +13,8 @@ const userRouter = require("./routes/userRoutes");
 const reviewRouter = require("./routes/reviewRoutes");
 
 const app = express();
-// 1) Global MIDDLEWARES
+
+// 1) GLOBAL MIDDLEWARES
 // Set security HTTP headers
 app.use(helmet());
 
@@ -22,7 +23,7 @@ if (process.env.NODE_ENV === "development") {
 	app.use(morgan("dev"));
 }
 
-//  Rate limiting
+// Limit requests from same API
 const limiter = rateLimit({
 	max: 100,
 	windowMs: 60 * 60 * 1000,
@@ -37,9 +38,9 @@ app.use(express.json({ limit: "10kb" }));
 app.use(mongoSanitize());
 
 // Data sanitization against XSS
-// NEED  to impliment  xss!!!!!!!!!!!
+// app.use(xss());
 
-//Prevent parameter pollution
+// Prevent parameter pollution
 app.use(
 	hpp({
 		whitelist: [
@@ -53,13 +54,13 @@ app.use(
 	}),
 );
 
-// serve static files
+// Serving static files
 app.use(express.static(`${__dirname}/public`));
 
-// 2) Test MIDDLEWARE
+// Test middleware
 app.use((req, res, next) => {
 	req.requestTime = new Date().toISOString();
-
+	// console.log(req.headers);
 	next();
 });
 
@@ -69,9 +70,6 @@ app.use("/api/v1/users", userRouter);
 app.use("/api/v1/reviews", reviewRouter);
 
 app.all("*", (req, res, next) => {
-	// const err  = new  Error (`Can't find ${req.originalUrl} on this server!`);
-	// err.statusCode = 404;
-
 	next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
