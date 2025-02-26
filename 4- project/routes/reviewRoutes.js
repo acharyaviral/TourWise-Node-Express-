@@ -4,8 +4,12 @@ const authController = require("./../controllers/authController");
 
 const router = express.Router({ mergeParams: true });
 
+// Protect all routes after this middleware
 router.use(authController.protect);
 
+/**
+ * Review Routes
+ */
 router
 	.route("/")
 	.get(reviewController.getAllReviews)
