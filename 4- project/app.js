@@ -4,7 +4,9 @@ const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
 const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
+
 const hpp = require("hpp");
+const cookieParser = require("cookie-parser");
 
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
@@ -18,38 +20,37 @@ const app = express();
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
 
-/**
- * GLOBAL MIDDLEWARES
- */
-
-// Security: Set HTTP headers
-app.use(helmet());
-
-// Serving static files from the "public" directory
+// 1) GLOBAL MIDDLEWARES
+// Serving static files
 app.use(express.static(path.join(__dirname, "public")));
 
-// Logging middleware (only in development mode)
+// Set security HTTP headers
+app.use(helmet());
+
+// Development logging
 if (process.env.NODE_ENV === "development") {
 	app.use(morgan("dev"));
 }
 
-// Rate limiting: Restrict requests from the same IP
-app.use(
-	"/api",
-	rateLimit({
-		max: 100,
-		windowMs: 60 * 60 * 1000,
-		message: "Too many requests from this IP, please try again in an hour!",
-	}),
-);
+// Limit requests from same API
+const limiter = rateLimit({
+	max: 100,
+	windowMs: 60 * 60 * 1000,
+	message: "Too many requests from this IP, please try again in an hour!",
+});
+app.use("/api", limiter);
 
-// Body parser: Limits request body size
+// Body parser, reading data from body into req.body
 app.use(express.json({ limit: "10kb" }));
+app.use(express.urlencoded({ extended: true, limit: "10kb" }));
+app.use(cookieParser());
 
 // Data sanitization against NoSQL query injection
 app.use(mongoSanitize());
 
-// Prevent parameter pollution, allowing certain query parameters
+// Data sanitization against XSS
+
+// Prevent parameter pollution
 app.use(
 	hpp({
 		whitelist: [
@@ -63,24 +64,23 @@ app.use(
 	}),
 );
 
-// Middleware to add request timestamp
+// Test middleware
 app.use((req, res, next) => {
 	req.requestTime = new Date().toISOString();
+
 	next();
 });
 
-// ROUTES
+// 3) ROUTES
 app.use("/", viewRouter);
 app.use("/api/v1/tours", tourRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/reviews", reviewRouter);
 
-// Handle undefined routes
 app.all("*", (req, res, next) => {
 	next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
-// Global error handling middleware
 app.use(globalErrorHandler);
 
 module.exports = app;
