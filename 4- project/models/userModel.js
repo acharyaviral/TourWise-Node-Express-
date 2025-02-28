@@ -2,6 +2,7 @@ const crypto = require("node:crypto");
 const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
+const { type } = require("node:os");
 
 const userSchema = new mongoose.Schema({
 	name: {
@@ -15,7 +16,7 @@ const userSchema = new mongoose.Schema({
 		lowercase: true,
 		validate: [validator.isEmail, "Please provide a valid email"],
 	},
-	photo: String,
+	photo: { type: String, default: "default.jpg" },
 	role: {
 		type: String,
 		enum: ["user", "guide", "lead-guide", "admin"],
