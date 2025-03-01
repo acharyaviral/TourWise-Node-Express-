@@ -3,7 +3,7 @@ node_modules/
 
 dev-data/
 
-
+config.env
 
 # Logs
 npm-debug.log*
