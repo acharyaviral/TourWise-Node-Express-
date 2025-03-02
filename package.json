@@ -3,10 +3,8 @@
 	"version": "1.0.0",
 	"main": "app.js",
 	"scripts": {
-		"start": "nodemon server.js",
-		"start-prod": "NODE_ENV=production nodemon server.js",
-		"watch:js": "parcel watch ./public/js/index.js --dist-dir ./public/js --out-file bundle.js",
-		"build:js": "parcel watch ./public/js/index.js --dist-dir ./public/js --out-file bundle.js"
+		"dev": "parcel public/js/index.js --dist-dir public/dist --no-source-maps",
+		"build": "parcel build public/js/index.js --dist-dir public/dist"
 	},
 	"author": "viral",
 	"license": "ISC",
@@ -38,5 +36,10 @@
 		"stripe": "^17.7.0",
 		"validator": "^13.12.0",
 		"xss": "^1.0.15"
+	},
+	"devDependencies": {
+		"buffer": "^6.0.3",
+		"parcel": "^2.13.3",
+		"process": "^0.11.10"
 	}
 }
