@@ -596,15 +596,17 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 }
 
 },{}],"jrZjr":[function(require,module,exports,__globalThis) {
-var _mapbox = require("./mapbox");
+/* eslint-disable */ var _mapbox = require("./mapbox");
 var _login = require("./login");
 var _updateSettings = require("./updateSettings");
+//import { bookTour } from "./stripe";
 // DOM ELEMENTS
 const mapBox = document.getElementById("map");
 const loginForm = document.querySelector(".form--login");
 const logOutBtn = document.querySelector(".nav__el--logout");
 const userDataForm = document.querySelector(".form-user-data");
 const userPasswordForm = document.querySelector(".form-user-password");
+//const bookBtn = document.getElementById("book-tour");
 // DELEGATION
 if (mapBox) {
     const locations = JSON.parse(mapBox.dataset.locations);
@@ -619,12 +621,12 @@ if (loginForm) loginForm.addEventListener("submit", (e)=>{
 if (logOutBtn) logOutBtn.addEventListener("click", (0, _login.logout));
 if (userDataForm) userDataForm.addEventListener("submit", (e)=>{
     e.preventDefault();
-    const name = document.getElementById("name").value;
-    const email = document.getElementById("email").value;
-    (0, _updateSettings.updateSettings)({
-        name,
-        email
-    }, "data");
+    const form = new FormData();
+    form.append("name", document.getElementById("name").value);
+    form.append("email", document.getElementById("email").value);
+    form.append("photo", document.getElementById("photo").files[0]);
+    console.log(form);
+    (0, _updateSettings.updateSettings)(form, "data");
 });
 if (userPasswordForm) userPasswordForm.addEventListener("submit", async (e)=>{
     e.preventDefault();
@@ -641,75 +643,57 @@ if (userPasswordForm) userPasswordForm.addEventListener("submit", async (e)=>{
     document.getElementById("password-current").value = "";
     document.getElementById("password").value = "";
     document.getElementById("password-confirm").value = "";
-});
+}); // if (bookBtn)
+ // 	bookBtn.addEventListener("click", (e) => {
+ // 		e.target.textContent = "Processing...";
+ // 		const { tourId } = e.target.dataset;
+ // 		bookTour(tourId);
+ // 	});
 
 },{"./mapbox":"iKE1t","./login":"b0yho","./updateSettings":"bxABW"}],"iKE1t":[function(require,module,exports,__globalThis) {
-/* eslint-disable */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "displayMap", ()=>displayMap);
-const displayMap = (locations)=>{
-    mapboxgl.accessToken = 'pk.eyJ1Ijoiam9uYXNzY2htZWR0bWFubiIsImEiOiJjam54ZmM5N3gwNjAzM3dtZDNxYTVlMnd2In0.ytpI7V7w7cyT1Kq5rT9Z1A';
-    var map = new mapboxgl.Map({
-        container: 'map',
-        style: 'mapbox://styles/jonasschmedtmann/cjvi9q8jd04mi1cpgmg7ev3dy',
-        scrollZoom: false
-    });
-    const bounds = new mapboxgl.LngLatBounds();
-    locations.forEach((loc)=>{
-        // Create marker
-        const el = document.createElement('div');
-        el.className = 'marker';
-        // Add marker
-        new mapboxgl.Marker({
-            element: el,
-            anchor: 'bottom'
-        }).setLngLat(loc.coordinates).addTo(map);
-        // Add popup
-        new mapboxgl.Popup({
-            offset: 30
-        }).setLngLat(loc.coordinates).setHTML(`<p>Day ${loc.day}: ${loc.description}</p>`).addTo(map);
-        // Extend map bounds to include current location
-        bounds.extend(loc.coordinates);
-    });
-    map.fitBounds(bounds, {
-        padding: {
-            top: 200,
-            bottom: 150,
-            left: 100,
-            right: 100
-        }
-    });
-};
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"j7FRh":[function(require,module,exports,__globalThis) {
-exports.interopDefault = function(a) {
-    return a && a.__esModule ? a : {
-        default: a
-    };
-};
-exports.defineInteropFlag = function(a) {
-    Object.defineProperty(a, '__esModule', {
-        value: true
-    });
-};
-exports.exportAll = function(source, dest) {
-    Object.keys(source).forEach(function(key) {
-        if (key === 'default' || key === '__esModule' || Object.prototype.hasOwnProperty.call(dest, key)) return;
-        Object.defineProperty(dest, key, {
-            enumerable: true,
-            get: function() {
-                return source[key];
-            }
-        });
-    });
-    return dest;
-};
-exports.export = function(dest, destName, get) {
-    Object.defineProperty(dest, destName, {
-        enumerable: true,
-        get: get
-    });
-};
+// /* eslint-disable */
+// export const displayMap = locations => {
+//   mapboxgl.accessToken =
+//     'pk.eyJ1Ijoiam9uYXNzY2htZWR0bWFubiIsImEiOiJjam54ZmM5N3gwNjAzM3dtZDNxYTVlMnd2In0.ytpI7V7w7cyT1Kq5rT9Z1A';
+//   var map = new mapboxgl.Map({
+//     container: 'map',
+//     style: 'mapbox://styles/jonasschmedtmann/cjvi9q8jd04mi1cpgmg7ev3dy',
+//     scrollZoom: false
+//     // center: [-118.113491, 34.111745],
+//     // zoom: 10,
+//     // interactive: false
+//   });
+//   const bounds = new mapboxgl.LngLatBounds();
+//   locations.forEach(loc => {
+//     // Create marker
+//     const el = document.createElement('div');
+//     el.className = 'marker';
+//     // Add marker
+//     new mapboxgl.Marker({
+//       element: el,
+//       anchor: 'bottom'
+//     })
+//       .setLngLat(loc.coordinates)
+//       .addTo(map);
+//     // Add popup
+//     new mapboxgl.Popup({
+//       offset: 30
+//     })
+//       .setLngLat(loc.coordinates)
+//       .setHTML(`<p>Day ${loc.day}: ${loc.description}</p>`)
+//       .addTo(map);
+//     // Extend map bounds to include current location
+//     bounds.extend(loc.coordinates);
+//   });
+//   map.fitBounds(bounds, {
+//     padding: {
+//       top: 200,
+//       bottom: 150,
+//       left: 100,
+//       right: 100
+//     }
+//   });
+// };
 
 },{}],"b0yho":[function(require,module,exports,__globalThis) {
 /* eslint-disable */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -722,34 +706,36 @@ var _alerts = require("./alerts");
 const login = async (email, password)=>{
     try {
         const res = await (0, _axiosDefault.default)({
-            method: 'POST',
-            url: 'http://127.0.0.1:3000/api/v1/users/login',
+            method: "POST",
+            url: "http://127.0.0.1:3000/api/v1/users/login",
             data: {
                 email,
                 password
             }
         });
-        if (res.data.status === 'success') {
-            (0, _alerts.showAlert)('success', 'Logged in successfully!');
+        if (res.data.status === "success") {
+            (0, _alerts.showAlert)("success", "Logged in successfully!");
             window.setTimeout(()=>{
-                location.assign('/');
+                location.assign("/");
             }, 1500);
         }
     } catch (err) {
-        (0, _alerts.showAlert)('error', err.response.data.message);
+        (0, _alerts.showAlert)("error", err.response.data.message);
     }
 };
 const logout = async ()=>{
     try {
         const res = await (0, _axiosDefault.default)({
-            method: 'GET',
-            url: 'http://127.0.0.1:3000/api/v1/users/logout'
+            method: "GET",
+            url: "http://127.0.0.1:3000/api/v1/users/logout"
         });
-        res.data.status = 'success';
+        // biome-ignore lint/correctness/noConstantCondition: <explanation>
+        // biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
+        res.data.status = "success";
         location.reload(true);
     } catch (err) {
         console.log(err.response);
-        (0, _alerts.showAlert)('error', 'Error logging out! Try again.');
+        (0, _alerts.showAlert)("error", "Error logging out! Try again.");
     }
 };
 
@@ -1593,7 +1579,37 @@ function bind(fn, thisArg) {
     };
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"gwL4I":[function(require,module,exports,__globalThis) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"j7FRh":[function(require,module,exports,__globalThis) {
+exports.interopDefault = function(a) {
+    return a && a.__esModule ? a : {
+        default: a
+    };
+};
+exports.defineInteropFlag = function(a) {
+    Object.defineProperty(a, '__esModule', {
+        value: true
+    });
+};
+exports.exportAll = function(source, dest) {
+    Object.keys(source).forEach(function(key) {
+        if (key === 'default' || key === '__esModule' || Object.prototype.hasOwnProperty.call(dest, key)) return;
+        Object.defineProperty(dest, key, {
+            enumerable: true,
+            get: function() {
+                return source[key];
+            }
+        });
+    });
+    return dest;
+};
+exports.export = function(dest, destName, get) {
+    Object.defineProperty(dest, destName, {
+        enumerable: true,
+        get: get
+    });
+};
+
+},{}],"gwL4I":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _utilsJs = require("./../utils.js");
@@ -5683,15 +5699,15 @@ var _axiosDefault = parcelHelpers.interopDefault(_axios);
 var _alerts = require("./alerts");
 const updateSettings = async (data, type)=>{
     try {
-        const url = type === 'password' ? 'http://127.0.0.1:3000/api/v1/users/updateMyPassword' : 'http://127.0.0.1:3000/api/v1/users/updateMe';
+        const url = type === "password" ? "http://127.0.0.1:3000/api/v1/users/updateMyPassword" : "http://127.0.0.1:3000/api/v1/users/updateMe";
         const res = await (0, _axiosDefault.default)({
-            method: 'PATCH',
+            method: "PATCH",
             url,
             data
         });
-        if (res.data.status === 'success') (0, _alerts.showAlert)('success', `${type.toUpperCase()} updated successfully!`);
+        if (res.data.status === "success") (0, _alerts.showAlert)("success", `${type.toUpperCase()} updated successfully!`);
     } catch (err) {
-        (0, _alerts.showAlert)('error', err.response.data.message);
+        (0, _alerts.showAlert)("error", err.response.data.message);
     }
 };
 
