@@ -3,8 +3,8 @@
 	"version": "1.0.0",
 	"main": "app.js",
 	"scripts": {
-		"dev": "parcel public/js/index.js --dist-dir public/dist --no-source-maps",
-		"build": "parcel build public/js/index.js --dist-dir public/dist"
+		"start": "nodemon server.js",
+		"start:prod": "NODE_ENV=production nodemon server.js"
 	},
 	"author": "viral",
 	"license": "ISC",

@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  app:
+    container_name: express-app
+    build: .
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+      - /app/node_modules # Avoid overwriting `node_modules` in the container
+    command: ["node", "server.js"]
+    restart: always
