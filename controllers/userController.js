@@ -55,7 +55,11 @@ const filterObj = (obj, ...allowedFields) => {
 };
 
 exports.getMe = (req, res, next) => {
-	req.params.id = req.user.id;
+	if (!req.user) {
+		return next(new AppError("User not found. Please log in again.", 401));
+	}
+
+	req.params.id = req.user.id; // Attach user ID to params
 	next();
 };
 

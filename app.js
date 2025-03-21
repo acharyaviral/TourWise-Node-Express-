@@ -24,14 +24,20 @@ app.use(helmet());
 if (process.env.NODE_ENV === "development") {
 	app.use(morgan("dev"));
 }
-app.use(cors());
+app.use(
+	cors({
+		origin: "http://localhost:5173", // Replace with your frontend URL
+		credentials: true, // Allow cookies and authentication headers
+	}),
+);
+
 // Access-Control-Allow-Origin *
 // api.natours.com, front-end natours.com
 // app.use(cors({
 //   origin: 'https://www.natours.com'
 // }))
 
-app.options("*", cors());
+app.options("*", cors({ origin: "http://localhost:5173", credentials: true }));
 
 // Limit requests from same API
 const limiter = rateLimit({
